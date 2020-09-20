@@ -1,23 +1,22 @@
 import { getRepository } from "typeorm";
 import { User } from "../entity/User";
-import calContributions from "../lib/contributions/calContributions";
 
-export default async (data) => {
-  const contributions = calContributions(data);
+export default async (userInfo) => {
+  console.log(userInfo);
   const userRepo = getRepository(User);
 
-  let user = await userRepo.findOne({ user_id: data.user.login });
+  let user = await userRepo.findOne({ user_id: userInfo.id });
   if (!user) {
     user = new User();
   }
 
-  user.user_id = data.user.login;
-  user.profile = data.user.avatarUrl;
-  user.bio = data.user.bio;
-  user.total_commit = contributions.total;
-  user.today_commit = contributions.today;
-  user.week_commit = contributions.week;
-  user.week_avg = contributions.weekAvg;
+  user.user_id = userInfo.id;
+  user.profile = userInfo.profile;
+  user.bio = userInfo.bio;
+  user.total_commit = userInfo.total;
+  user.today_commit = userInfo.today;
+  user.week_commit = userInfo.week;
+  user.week_avg = userInfo.weekAvg;
 
   return userRepo.save(user);
 };

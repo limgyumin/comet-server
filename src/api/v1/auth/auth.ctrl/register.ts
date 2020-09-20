@@ -18,17 +18,23 @@ export default async (req: Request, res: Response) => {
     });
 
     const contributions = calContributions(data);
-    findOrCreate(data);
+
+    const userInfo = {
+      id: data.user.login,
+      profile: data.user.avatarUrl,
+      bio: data.user.bio,
+      total: contributions.total,
+      today: contributions.today,
+      week: contributions.week,
+      weekAvg: contributions.weekAvg,
+    };
+
+    findOrCreate(userInfo);
 
     res.status(200).json({
       status: 200,
       message: "조회 성공.",
-      data: {
-        total: contributions.total,
-        today: contributions.today,
-        week: contributions.week,
-        weekAvg: contributions.weekAvg,
-      },
+      data: userInfo,
     });
   } catch (error) {
     console.log("서버 오류", error.message);
