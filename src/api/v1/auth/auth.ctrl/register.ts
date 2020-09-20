@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import getAPI from "../../../../lib/getAPI";
+import calContributions from "../../../../lib/calContributions";
 
 export default async (req: Request, res: Response) => {
   const { body } = req;
@@ -12,10 +13,19 @@ export default async (req: Request, res: Response) => {
       });
     });
 
+    const userInfo = {
+      user: {
+        userId: data.user.login,
+        profile: data.user.avatarUrl,
+        bio: data.user.bio,
+      },
+      contributions: calContributions(data),
+    };
+
     res.status(200).json({
       status: 200,
       message: "조회 성공.",
-      data: data,
+      data: userInfo,
     });
   } catch (error) {
     console.log("서버 오류", error.message);
