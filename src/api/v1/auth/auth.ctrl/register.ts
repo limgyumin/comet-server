@@ -1,24 +1,28 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
-import * as schedule from "node-schedule";
 
+import ContributionType from "../../../../types/Contributions";
+import UserInfoType from "../../../../types/UserInfo";
 import { User } from "../../../../entity/User";
 import findOrCreate from "../../../../lib/findOrCreate";
 import getAPI from "../../../../lib/githubAPI/getAPI";
 import calContributions from "../../../../lib/contributions/calContributions";
-import ContributionType from "../../../../types/Contributions";
+
+interface BodyType {
+  userId: string;
+}
 
 export default async (req: Request, res: Response) => {
-  const { body } = req;
+  const { userId }: BodyType = req.body;
 
   try {
     const userRepo = getRepository(User);
-    const user = await userRepo.findOne({ user_id: body.userId });
+    const user = await userRepo.findOne({ user_id: userId.toLowerCase() });
     let data: ContributionType;
-    let userInfo;
+    let userInfo: UserInfoType;
 
     if (!user) {
-      data = await getAPI(body.userId).catch((err) => {
+      data = await getAPI(userId).catch((err) => {
         return res.status(404).json({
           status: 404,
           message: "존재하지 않는 아이디.",
@@ -26,7 +30,7 @@ export default async (req: Request, res: Response) => {
       });
       const contributions = calContributions(data);
       userInfo = {
-        id: data.user.login,
+        id: userId.toLowerCase(),
         profile: data.user.avatarUrl,
         bio: data.user.bio,
         total: contributions.total,
