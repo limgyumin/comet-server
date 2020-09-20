@@ -1,4 +1,3 @@
-import calContributions from "../../lib/contributions/calContributions";
 import { getRepository } from "typeorm";
 import { User } from "../../entity/User";
 
@@ -26,11 +25,9 @@ interface DataType {
   };
 }
 
-export default async (data: DataType) => {
+export default async (data: DataType, contributions) => {
   const userRepo = getRepository(User);
   const user: User = new User();
-
-  const contributions = calContributions(data);
 
   user.user_id = data.user.login;
   user.profile = data.user.avatarUrl;

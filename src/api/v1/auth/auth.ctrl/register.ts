@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import { User } from "../../../../entity/User";
 
 import getAPI from "../../../../lib/githubAPI/getAPI";
 import calContributions from "../../../../lib/contributions/calContributions";
@@ -17,7 +15,8 @@ export default async (req: Request, res: Response) => {
       });
     });
 
-    createUserInfo(data);
+    const contributions = calContributions(data);
+    createUserInfo(data, contributions);
 
     res.status(200).json({
       status: 200,
