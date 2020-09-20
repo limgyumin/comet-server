@@ -2,7 +2,6 @@ import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 
 export default async (userInfo) => {
-  console.log(userInfo);
   const userRepo = getRepository(User);
 
   let user = await userRepo.findOne({ user_id: userInfo.id });

@@ -18,6 +18,7 @@ export default async (req: Request, res: Response) => {
     });
 
     const contributions = calContributions(data);
+    console.log(contributions);
 
     const userInfo = {
       id: data.user.login,
@@ -28,6 +29,8 @@ export default async (req: Request, res: Response) => {
       week: contributions.week,
       weekAvg: contributions.weekAvg,
     };
+
+    console.log(userInfo);
 
     findOrCreate(userInfo);
 
