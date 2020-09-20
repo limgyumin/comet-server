@@ -1,28 +1,6 @@
-interface ContributionDaysType {
-  contributionCount: number;
-  date: Date;
-  weekday: number;
-}
+import ContributionType from "../../types/Contributions";
 
-interface WeeksType {
-  contributionDays: Array<ContributionDaysType>;
-}
-
-interface DataType {
-  user: {
-    login: string;
-    avatarUrl: string;
-    bio: string;
-    contributionsCollection: {
-      contributionCalendar: {
-        totalContributions: number;
-        weeks: Array<WeeksType>;
-      };
-    };
-  };
-}
-
-export default (data: DataType) => {
+export default (data: ContributionType) => {
   const {
     contributionsCollection: {
       contributionCalendar: { weeks },
@@ -66,5 +44,6 @@ export default (data: DataType) => {
     weekAvg: weekCount / weekIdx,
   };
 
+  console.log(contributions);
   return contributions;
 };

@@ -1,36 +1,52 @@
 import { Request, Response } from "express";
-
 import { getRepository } from "typeorm";
+import * as schedule from "node-schedule";
+
 import { User } from "../../../../entity/User";
 import findOrCreate from "../../../../lib/findOrCreate";
 import getAPI from "../../../../lib/githubAPI/getAPI";
 import calContributions from "../../../../lib/contributions/calContributions";
+import ContributionType from "../../../../types/Contributions";
 
 export default async (req: Request, res: Response) => {
   const { body } = req;
 
   try {
-    const data = await getAPI(body.userId).catch((err) => {
-      return res.status(404).json({
-        status: 404,
-        message: "존재하지 않는 아이디.",
+    const userRepo = getRepository(User);
+    const user = await userRepo.findOne({ user_id: body.userId });
+    let data: ContributionType;
+    let userInfo;
+
+    if (!user) {
+      data = await getAPI(body.userId).catch((err) => {
+        return res.status(404).json({
+          status: 404,
+          message: "존재하지 않는 아이디.",
+        });
       });
-    });
-
-    const contributions = calContributions(data);
-    console.log(contributions);
-
-    const userInfo = {
-      id: data.user.login,
-      profile: data.user.avatarUrl,
-      bio: data.user.bio,
-      total: contributions.total,
-      today: contributions.today,
-      week: contributions.week,
-      weekAvg: contributions.weekAvg,
-    };
-
-    console.log(userInfo);
+      const contributions = calContributions(data);
+      userInfo = {
+        id: data.user.login,
+        profile: data.user.avatarUrl,
+        bio: data.user.bio,
+        total: contributions.total,
+        today: contributions.today,
+        week: contributions.week,
+        weekAvg: contributions.weekAvg,
+        message: "처음 조회된 유저 정보.",
+      };
+    } else {
+      userInfo = {
+        id: user.user_id,
+        profile: user.profile,
+        bio: user.bio,
+        total: user.total_commit,
+        today: user.today_commit,
+        week: user.week_commit,
+        weekAvg: user.week_avg,
+        message: "재 조회된 유저 정보.",
+      };
+    }
 
     findOrCreate(userInfo);
 
