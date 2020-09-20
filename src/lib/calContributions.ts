@@ -47,12 +47,14 @@ export default (data: DataType) => {
     }
   });
 
-  let commitCount: number = 0;
+  let weekCount: number = 0;
+  let weekIdx: number = 0;
 
   weeks.map((week, index) => {
     if (index === weeks.length - 1) {
-      week.contributionDays.map((day) => {
-        commitCount += day.contributionCount;
+      week.contributionDays.map((day, index2) => {
+        weekCount += day.contributionCount;
+        weekIdx = index2 + 1;
       });
     }
   });
@@ -60,7 +62,8 @@ export default (data: DataType) => {
   const contributions = {
     total: totalContributions,
     today: todayCount,
-    week: commitCount,
+    week: weekCount,
+    weekAvg: weekCount / weekIdx,
   };
 
   return contributions;
