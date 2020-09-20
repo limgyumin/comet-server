@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
-import getAPI from "../../../../lib/getAPI";
-import calContributions from "../../../../lib/calContributions";
 import { getRepository } from "typeorm";
 import { User } from "../../../../entity/User";
+
+import getAPI from "../../../../lib/githubAPI/getAPI";
+import calContributions from "../../../../lib/contributions/calContributions";
+import createUserInfo from "../../../../lib/database/createUserInfo";
 
 export default async (req: Request, res: Response) => {
   const { body } = req;
@@ -15,33 +17,12 @@ export default async (req: Request, res: Response) => {
       });
     });
 
-    const userInfo = {
-      user: {
-        userId: data.user.login,
-        profile: data.user.avatarUrl,
-        bio: data.user.bio,
-      },
-      contributions: calContributions(data),
-    };
-
-    const userRepo = getRepository(User);
-    const user: User = new User();
-
-    user.user_id = body.userId;
-    user.profile = userInfo.user.profile;
-    user.bio = userInfo.user.bio;
-    console.log(userInfo.user.bio);
-    user.total_commit = userInfo.contributions.total;
-    user.today_commit = userInfo.contributions.today;
-    user.week_commit = userInfo.contributions.week;
-    user.week_avg = userInfo.contributions.weekAvg;
-
-    await userRepo.save(user);
+    createUserInfo(data);
 
     res.status(200).json({
       status: 200,
       message: "조회 성공.",
-      data: userInfo,
+      data: {},
     });
   } catch (error) {
     console.log("서버 오류", error.message);
