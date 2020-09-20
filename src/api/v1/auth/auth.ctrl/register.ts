@@ -3,15 +3,14 @@ import getAPI from "../../../../lib/getAPI";
 
 export default async (req: Request, res: Response) => {
   const { body } = req;
-  const data = await getAPI(body.userId);
 
   try {
-    if (data.user === null) {
+    const data = await getAPI(body.userId).catch((err) => {
       return res.status(404).json({
         status: 404,
         message: "존재하지 않는 아이디.",
       });
-    }
+    });
 
     res.status(200).json({
       status: 200,
@@ -19,6 +18,7 @@ export default async (req: Request, res: Response) => {
       data: data,
     });
   } catch (error) {
+    console.log("서버 오류", error.message);
     return res.status(500).json({
       status: 500,
       message: "서버 오류.",
