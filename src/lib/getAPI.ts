@@ -1,8 +1,7 @@
 import client from "./connectAPI";
 import gql from "graphql-tag";
 
-exports.getAPI = async () => {
-  const userId = "limgyumin";
+export default async (userId: string) => {
   const { loading, errors, data } = await client.query({
     query: gql`
           {
@@ -27,7 +26,5 @@ exports.getAPI = async () => {
         `,
   });
 
-  console.log("loading:", loading);
-  console.log("error:", errors);
-  console.log("data:", data);
+  return data;
 };
