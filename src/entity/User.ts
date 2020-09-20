@@ -1,16 +1,45 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity()
+@Entity("user")
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  idx: number;
 
-  @Column()
-  firstName: string;
+  @Column({
+    nullable: false,
+    length: 45,
+  })
+  user_id: string;
 
-  @Column()
-  lastName: string;
+  @Column({
+    nullable: false,
+    length: 255,
+  })
+  profile: string;
 
-  @Column()
-  age: number;
+  @Column({
+    nullable: false,
+    length: 255,
+  })
+  bio: string;
+
+  @Column({
+    nullable: false,
+  })
+  total_commit: number;
+
+  @Column({
+    nullable: false,
+  })
+  today_commit: number;
+
+  @Column({
+    nullable: false,
+  })
+  week_commit: number;
+
+  @Column({
+    nullable: false,
+  })
+  week_avg: number;
 }

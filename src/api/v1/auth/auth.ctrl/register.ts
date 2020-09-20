@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import getAPI from "../../../../lib/getAPI";
 import calContributions from "../../../../lib/calContributions";
+import { getRepository } from "typeorm";
+import { User } from "../../../../entity/User";
 
 export default async (req: Request, res: Response) => {
   const { body } = req;
@@ -21,6 +23,20 @@ export default async (req: Request, res: Response) => {
       },
       contributions: calContributions(data),
     };
+
+    const userRepo = getRepository(User);
+    const user: User = new User();
+
+    user.user_id = body.userId;
+    user.profile = userInfo.user.profile;
+    user.bio = userInfo.user.bio;
+    console.log(userInfo.user.bio);
+    user.total_commit = userInfo.contributions.total;
+    user.today_commit = userInfo.contributions.today;
+    user.week_commit = userInfo.contributions.week;
+    user.week_avg = userInfo.contributions.weekAvg;
+
+    await userRepo.save(user);
 
     res.status(200).json({
       status: 200,
