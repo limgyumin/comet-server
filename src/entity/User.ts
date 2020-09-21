@@ -24,7 +24,7 @@ export class User extends BaseEntity {
   profile: string;
 
   @Column({
-    nullable: false,
+    nullable: true,
     length: 255,
   })
   bio: string;
