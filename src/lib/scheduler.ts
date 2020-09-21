@@ -7,11 +7,9 @@ import ContributionType from "../types/Contributions";
 import getAPI from "./githubAPI/getAPI";
 import calContributions from "./contributions/calContributions";
 
-//"0 0 10,12,14,16,18,20 * * *"
-
 export default () => {
   console.log("[Schedule] Run at a specific time");
-  schedule.scheduleJob("0 * * * * *", async () => {
+  schedule.scheduleJob("0 0 10,12,14,16,18,20 * * *", async () => {
     try {
       const userRepo = getRepository(User);
       const rowCount: number = await userRepo.count();
@@ -23,6 +21,7 @@ export default () => {
       } else {
         const userData = await userRepo.find();
         userData.map(async (user, index) => {
+          //row에 존재하는 userId 값이 유효하지 않으면 에러처리 해줘야함.
           data = await getAPI(user.user_id).catch((err) => {});
           const contributions = calContributions(data);
 
