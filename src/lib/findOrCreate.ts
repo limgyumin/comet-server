@@ -5,7 +5,6 @@ import UserInfoType from "../types/UserInfo";
 export default async (userInfo: UserInfoType) => {
   const userRepo = getRepository(User);
 
-  const count: number = await userRepo.count();
   let user = await userRepo.findOne({ user_id: userInfo.id });
   if (!user) {
     user = new User();

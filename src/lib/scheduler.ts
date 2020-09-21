@@ -5,16 +5,25 @@ import * as schedule from "node-schedule";
 
 import getAPI from "./githubAPI/getAPI";
 
+//"0 0 10,12,14,16,18,20 * * *"
+
 export default () => {
   console.log("[Schedule] Run at a specific time");
-  schedule.scheduleJob("0 0 12,16,20 * * *", async () => {
+  schedule.scheduleJob("* * * * * *", async () => {
     try {
       const userRepo = getRepository(User);
-      const count: number = await userRepo.count();
+      const rowCount: number = await userRepo.count();
 
-      if (count === 0) {
+      if (rowCount === 0) {
         console.log("[GitHubAPI] Empty DB Detected. Exit.");
         return;
+      } else {
+        let userArray: Array<string> = [];
+        const userData = await userRepo.find();
+        userData.map((data, index) => {
+          userArray.push(data.user_id);
+        });
+        console.log(userArray);
       }
     } catch (error) {
       console.log("[GitHubAPI] :", error.message);
