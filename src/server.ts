@@ -3,6 +3,8 @@ import "dotenv/config";
 import * as http from "http";
 import app from "./app";
 
+import scheduler from "./lib/scheduler";
+
 const { PORT } = process.env;
 
 createConnection()
@@ -12,6 +14,8 @@ createConnection()
   .catch((err) => {
     console.log(err);
   });
+
+scheduler();
 
 http.createServer(app).listen(PORT || 8080, () => {
   console.log(`[HTTP] Server is listening to ${PORT}`);

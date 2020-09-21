@@ -44,6 +44,5 @@ export default (data: ContributionType) => {
     weekAvg: weekCount / weekIdx,
   };
 
-  console.log(contributions);
   return contributions;
 };

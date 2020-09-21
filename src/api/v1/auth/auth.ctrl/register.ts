@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
+import { User } from "../../../../entity/User";
+import UserInfoType from "../../../../types/UserInfo";
 
 import ContributionType from "../../../../types/Contributions";
-import UserInfoType from "../../../../types/UserInfo";
-import { User } from "../../../../entity/User";
-import findOrCreate from "../../../../lib/findOrCreate";
 import getAPI from "../../../../lib/githubAPI/getAPI";
+import findOrCreate from "../../../../lib/findOrCreate";
 import calContributions from "../../../../lib/contributions/calContributions";
 
 interface BodyType {
