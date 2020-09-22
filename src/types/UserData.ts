@@ -8,7 +8,7 @@ interface WeeksType {
   contributionDays: Array<ContributionDaysType>;
 }
 
-export default interface ContributionType {
+export default interface UserDataType {
   user: {
     login: string;
     avatarUrl: string;

@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../../../../entity/User";
 import UserInfoType from "../../../../types/UserInfo";
+import UserDataType from "../../../../types/UserData";
 
-import ContributionType from "../../../../types/Contributions";
 import getAPI from "../../../../lib/githubAPI/getAPI";
 import findOrCreate from "../../../../lib/findOrCreate";
 import calContributions from "../../../../lib/contributions/calContributions";
@@ -18,7 +18,7 @@ export default async (req: Request, res: Response) => {
   try {
     const userRepo = getRepository(User);
     const user = await userRepo.findOne({ user_id: userId.toLowerCase() });
-    let data: ContributionType;
+    let data: UserDataType;
     let userInfo: UserInfoType;
 
     if (!user) {

@@ -1,19 +1,20 @@
-import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 import * as schedule from "node-schedule";
 
-import ContributionType from "../types/Contributions";
+import UserDataType from "../types/UserData";
 import getAPI from "./githubAPI/getAPI";
 import calContributions from "./contributions/calContributions";
 
+//"0 0 10,12,14,16,18,20 * * *"
 export default () => {
   console.log("[Schedule] Run at a specific time");
-  schedule.scheduleJob("0 0 10,12,14,16,18,20 * * *", async () => {
+  schedule.scheduleJob("0 * * * * *", async () => {
+    console.log("[Schedule] Start");
     try {
       const userRepo = getRepository(User);
       const rowCount: number = await userRepo.count();
-      let data: ContributionType;
+      let data: UserDataType;
 
       if (rowCount === 0) {
         console.log("[Typeorm] Empty DB Detected. Exit.");
@@ -25,10 +26,6 @@ export default () => {
           data = await getAPI(user.user_id).catch((err) => {});
           const contributions = calContributions(data);
 
-          if (contributions.today === 0) {
-            console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
-          }
-
           user.user_id = data.user.login.toLowerCase();
           user.profile = data.user.avatarUrl;
           user.bio = data.user.bio;
@@ -38,7 +35,13 @@ export default () => {
           user.week_avg = contributions.weekAvg;
 
           userRepo.save(user);
-          console.log(`[Update] Successfully updated GitHub Data [${index}]`);
+          console.log(
+            `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
+          );
+
+          // if (contributions.today === 0) {
+          //   console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
+          // }
         });
       }
     } catch (error) {
