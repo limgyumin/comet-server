@@ -29,5 +29,6 @@ export default async (userId: string) => {
   if (errors) {
     console.log(errors);
   }
+
   return data;
 };
