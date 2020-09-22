@@ -16,7 +16,7 @@ export default () => {
       let data: ContributionType;
 
       if (rowCount === 0) {
-        console.log("[GitHubAPI] Empty DB Detected. Exit.");
+        console.log("[Typeorm] Empty DB Detected. Exit.");
         return;
       } else {
         const userData = await userRepo.find();
@@ -24,6 +24,10 @@ export default () => {
           //row에 존재하는 userId 값이 유효하지 않으면 에러처리 해줘야함.
           data = await getAPI(user.user_id).catch((err) => {});
           const contributions = calContributions(data);
+
+          if (contributions.today === 0) {
+            console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
+          }
 
           user.user_id = data.user.login.toLowerCase();
           user.profile = data.user.avatarUrl;
@@ -34,7 +38,7 @@ export default () => {
           user.week_avg = contributions.weekAvg;
 
           userRepo.save(user);
-          console.log(`[Typeorm] Successfully updated GitHub Data [${index}]`);
+          console.log(`[Update] Successfully updated GitHub Data [${index}]`);
         });
       }
     } catch (error) {
