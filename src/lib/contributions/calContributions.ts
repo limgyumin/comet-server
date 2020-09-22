@@ -44,5 +44,7 @@ export default (data: UserDataType) => {
     weekAvg: Math.ceil(weekContributions / weekIdx),
   };
 
+  // console.log(data.user.login, todayContributions);
+
   return contributions;
 };

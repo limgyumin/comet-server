@@ -10,7 +10,7 @@ import calContributions from "./contributions/calContributions";
 export default () => {
   console.log("[Schedule] Run at a specific time");
   schedule.scheduleJob("0 * * * * *", async () => {
-    console.log("[Schedule] Start");
+    console.log("\n[Schedule] Start");
     try {
       const userRepo = getRepository(User);
       const rowCount: number = await userRepo.count();
@@ -22,26 +22,29 @@ export default () => {
       } else {
         const userData = await userRepo.find();
         userData.map(async (user, index) => {
-          //row에 존재하는 userId 값이 유효하지 않으면 에러처리 해줘야함.
-          data = await getAPI(user.user_id).catch((err) => {});
-          const contributions = calContributions(data);
+          try {
+            data = await getAPI(user.user_id);
+            const contributions = calContributions(data);
 
-          user.user_id = data.user.login.toLowerCase();
-          user.profile = data.user.avatarUrl;
-          user.bio = data.user.bio;
-          user.total_commit = contributions.total;
-          user.today_commit = contributions.today;
-          user.week_commit = contributions.week;
-          user.week_avg = contributions.weekAvg;
+            user.user_id = data.user.login.toLowerCase();
+            user.profile = data.user.avatarUrl;
+            user.bio = data.user.bio;
+            user.total_commit = contributions.total;
+            user.today_commit = contributions.today;
+            user.week_commit = contributions.week;
+            user.week_avg = contributions.weekAvg;
 
-          userRepo.save(user);
-          console.log(
-            `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
-          );
+            await userRepo.save(user);
+            // console.log(
+            //   `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
+            // );
 
-          // if (contributions.today === 0) {
-          //   console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
-          // }
+            // if (contributions.today === 0) {
+            //   console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
+            // }
+          } catch (err) {
+            console.log(err);
+          }
         });
       }
     } catch (error) {
