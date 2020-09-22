@@ -1,6 +1,6 @@
-import UserDataType from "../../types/UserData";
+//import UserDataType from "../../types/UserData";
 
-export default (data: UserDataType) => {
+export default (data) => {
   const {
     contributionsCollection: {
       contributionCalendar: { weeks },
