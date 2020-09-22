@@ -1,6 +1,6 @@
-import ContributionType from "../../types/Contributions";
+import UserDataType from "../../types/UserData";
 
-export default (data: ContributionType) => {
+export default (data: UserDataType) => {
   const {
     contributionsCollection: {
       contributionCalendar: { weeks },
@@ -13,25 +13,25 @@ export default (data: ContributionType) => {
     },
   } = data.user;
 
-  let todayCount: number = 0;
+  let todayContributions: number = 0;
 
   weeks.map((week, index) => {
     if (index === weeks.length - 1) {
       week.contributionDays.map((day, index2) => {
         if (index2 === week.contributionDays.length - 1) {
-          todayCount = day.contributionCount;
+          todayContributions = day.contributionCount;
         }
       });
     }
   });
 
-  let weekCount: number = 0;
+  let weekContributions: number = 0;
   let weekIdx: number = 0;
 
   weeks.map((week, index) => {
     if (index === weeks.length - 1) {
       week.contributionDays.map((day, index2) => {
-        weekCount += day.contributionCount;
+        weekContributions += day.contributionCount;
         weekIdx = index2 + 1;
       });
     }
@@ -39,9 +39,9 @@ export default (data: ContributionType) => {
 
   const contributions = {
     total: totalContributions,
-    today: todayCount,
-    week: weekCount,
-    weekAvg: weekCount / weekIdx,
+    today: todayContributions,
+    week: weekContributions,
+    weekAvg: Math.ceil(weekContributions / weekIdx),
   };
 
   return contributions;
