@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { User } from "../../../../entity/User";
 import UserInfoType from "../../../../types/UserInfo";
-import UserDataType from "../../../../types/UserData";
+//import UserDataType from "../../../../types/UserData";
 
 import getAPI from "../../../../lib/githubAPI/getAPI";
 import findOrCreate from "../../../../lib/findOrCreate";
@@ -18,7 +18,7 @@ export default async (req: Request, res: Response) => {
   try {
     const userRepo = getRepository(User);
     const user = await userRepo.findOne({ user_id: userId.toLowerCase() });
-    let data: UserDataType;
+    let data;
     let userInfo: UserInfoType;
 
     if (!user) {
@@ -28,6 +28,13 @@ export default async (req: Request, res: Response) => {
           message: "존재하지 않는 아이디.",
         });
       });
+
+      console.log(
+        data.user.login,
+        data.user.contributionsCollection.contributionCalendar
+          .totalContributions
+      );
+
       const contributions = calContributions(data);
       userInfo = {
         id: userId.toLowerCase(),

@@ -2,7 +2,7 @@ import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 import * as schedule from "node-schedule";
 
-import UserDataType from "../types/UserData";
+//import UserDataType from "../types/UserData";
 import getAPI from "./githubAPI/getAPI";
 import calContributions from "./contributions/calContributions";
 
@@ -14,7 +14,7 @@ export default () => {
     try {
       const userRepo = getRepository(User);
       const rowCount: number = await userRepo.count();
-      let data: UserDataType;
+      let data;
 
       if (rowCount === 0) {
         console.log("[Typeorm] Empty DB Detected. Exit.");

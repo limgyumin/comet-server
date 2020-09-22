@@ -26,9 +26,8 @@ export default async (userId: string) => {
         `,
   });
 
-  console.log(
-    data.user.login,
-    data.user.contributionsCollection.contributionCalendar.totalContributions
-  );
+  if (errors) {
+    console.log(errors);
+  }
   return data;
 };
