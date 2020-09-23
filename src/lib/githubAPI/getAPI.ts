@@ -1,34 +1,44 @@
-import client from "./connectAPI";
-import gql from "graphql-tag";
+import "dotenv/config";
+import { GraphQLClient, gql } from "graphql-request";
 
 export default async (userId: string) => {
-  const { loading, errors, data } = await client.query({
-    query: gql`
-          {
-            user(login: "${userId}") {
-              login
-              avatarUrl
-              bio
-              contributionsCollection {
-                contributionCalendar {
-                  totalContributions
-                  weeks {
-                    contributionDays {
-                      contributionCount
-                      date
-                      weekday
-                    }
-                  }
-                }
-              }
-            }
-          }
-        `,
+  const endpoint = "https://api.github.com/graphql";
+
+  const graphQLClient = new GraphQLClient(endpoint, {
+    headers: {
+      authorization: `token ${process.env.GITHUB_TOKEN}`,
+    },
   });
 
-  if (errors) {
-    console.log(errors);
-  }
+  const query = gql`
+  {
+    user(login: "${userId}") {
+      login
+      avatarUrl
+      bio
+      contributionsCollection {
+        contributionCalendar {
+          totalContributions
+          weeks {
+            contributionDays {
+              contributionCount
+              date
+              weekday
+            }
+          }
+        }
+      }
+    }
+  }`;
 
-  return data;
+  try {
+    const data = await graphQLClient.request(query);
+    console.log(
+      data.user.login,
+      data.user.contributionsCollection.contributionCalendar.totalContributions
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
