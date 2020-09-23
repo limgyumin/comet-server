@@ -2,7 +2,7 @@ import "dotenv/config";
 import { GraphQLClient, gql } from "graphql-request";
 
 export default async (userId: string) => {
-  const endpoint = "https://api.github.com/graphql";
+  const endpoint = process.env.GITHUB_API_URL;
 
   const graphQLClient = new GraphQLClient(endpoint, {
     headers: {
@@ -31,14 +31,6 @@ export default async (userId: string) => {
     }
   }`;
 
-  try {
-    const data = await graphQLClient.request(query);
-    console.log(
-      data.user.login,
-      data.user.contributionsCollection.contributionCalendar.totalContributions
-    );
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
+  const data = await graphQLClient.request(query);
+  return data;
 };

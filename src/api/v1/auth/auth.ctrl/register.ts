@@ -22,12 +22,14 @@ export default async (req: Request, res: Response) => {
     let userInfo: UserInfoType;
 
     if (!user) {
-      data = await getAPI(userId).catch((err) => {
+      try {
+        data = await getAPI(userId);
+      } catch (err) {
         return res.status(404).json({
           status: 404,
           message: "존재하지 않는 아이디.",
         });
-      });
+      }
       const contributions = calContributions(data);
       userInfo = {
         id: userId.toLowerCase(),
@@ -60,7 +62,7 @@ export default async (req: Request, res: Response) => {
       data: userInfo,
     });
   } catch (error) {
-    console.log("서버 오류", error.message);
+    console.log("서버 오류", error);
     return res.status(500).json({
       status: 500,
       message: "서버 오류.",

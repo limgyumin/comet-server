@@ -9,7 +9,7 @@ import calContributions from "./contributions/calContributions";
 //"0 0 10,12,14,16,18,20 * * *"
 export default () => {
   console.log("[Schedule] Run at a specific time");
-  schedule.scheduleJob("0 * * * * *", async () => {
+  schedule.scheduleJob("0 0 10,12,14,16,18,20 * * *", async () => {
     console.log("\n[Schedule] Start");
     try {
       const userRepo = getRepository(User);
@@ -35,13 +35,13 @@ export default () => {
             user.week_avg = contributions.weekAvg;
 
             await userRepo.save(user);
-            // console.log(
-            //   `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
-            // );
+            console.log(
+              `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
+            );
 
-            // if (contributions.today === 0) {
-            //   console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
-            // }
+            if (contributions.today === 0) {
+              console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
+            }
           } catch (err) {
             console.log(err);
           }
