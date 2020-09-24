@@ -5,7 +5,10 @@ import UserInfoType from "../types/UserInfo";
 export default async (userInfo: UserInfoType) => {
   const userRepo = getRepository(User);
 
+  //파라미터로 받은 userInfo의 id가 db의 user_id와
+  //일치하는 Row를 찾아요.
   let user = await userRepo.findOne({ user_id: userInfo.id });
+  //없으면 새로운 user를 생성해요.
   if (!user) {
     user = new User();
   }

@@ -21,6 +21,8 @@ export default async (req: Request, res: Response) => {
     let data: UserDataType;
     let userInfo: UserInfoType;
 
+    //request user가 없으면 새로 조회,
+    //이미 있으면 db에 저장된 데이터를 보여줘요.
     if (!user) {
       try {
         data = await getAPI(userId);
@@ -31,6 +33,8 @@ export default async (req: Request, res: Response) => {
         });
       }
       const contributions = calContributions(data);
+      //db에 저장을 해야하기 때문에
+      //userInfo에 새로 얻은 데이터를 담아요.
       userInfo = {
         id: userId.toLowerCase(),
         profile: data.user.avatarUrl,
@@ -42,6 +46,7 @@ export default async (req: Request, res: Response) => {
         message: "처음 조회된 유저 정보.",
       };
     } else {
+      //userInfo에 db에 저장된 데이터를 담아요.
       userInfo = {
         id: user.user_id,
         profile: user.profile,

@@ -9,7 +9,7 @@ import calContributions from "./contributions/calContributions";
 //"0 0 10,12,14,16,18,20 * * *"
 export default () => {
   console.log("[Schedule] Run at a specific time");
-  schedule.scheduleJob("0 0 10,12,14,16,18,20 * * *", async () => {
+  schedule.scheduleJob("0 0 8,10,12,14,16,18,20 * * *", async () => {
     console.log("\n[Schedule] Start");
     try {
       const userRepo = getRepository(User);
