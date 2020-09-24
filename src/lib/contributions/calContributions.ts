@@ -1,18 +1,21 @@
 import UserDataType from "../../types/UserData";
 
 export default (data: UserDataType) => {
+  //주간 GitHub Data
   const {
     contributionsCollection: {
       contributionCalendar: { weeks },
     },
   } = data.user;
 
+  //전체 커밋 수
   const {
     contributionsCollection: {
       contributionCalendar: { totalContributions },
     },
   } = data.user;
 
+  //당일 커밋 수 계산
   let todayContributions: number = 0;
 
   weeks.map((week, index) => {
@@ -25,6 +28,7 @@ export default (data: UserDataType) => {
     }
   });
 
+  //주간 커밋 수 계산
   let weekContributions: number = 0;
   let weekIdx: number = 0;
 
@@ -37,14 +41,13 @@ export default (data: UserDataType) => {
     }
   });
 
+  //계산한 커밋 수를 Object에 담아서 return 해줘요.
   const contributions = {
     total: totalContributions,
     today: todayContributions,
     week: weekContributions,
     weekAvg: Math.ceil(weekContributions / weekIdx),
   };
-
-  // console.log(data.user.login, todayContributions);
 
   return contributions;
 };

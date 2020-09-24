@@ -5,7 +5,7 @@ import UserInfoType from "../../../../types/UserInfo";
 import UserDataType from "../../../../types/UserData";
 
 import getAPI from "../../../../lib/githubAPI/getAPI";
-import findOrCreate from "../../../../lib/findOrCreate";
+import createNewData from "../../../../lib/createNewData";
 import calContributions from "../../../../lib/contributions/calContributions";
 
 interface BodyType {
@@ -18,28 +18,22 @@ export default async (req: Request, res: Response) => {
   try {
     const userRepo = getRepository(User);
     const user = await userRepo.findOne({ user_id: userId.toLowerCase() });
-    let data: UserDataType;
     let userInfo: UserInfoType;
 
+    //request user가 없으면 새로 조회,
+    //이미 있으면 db에 저장된 데이터를 보여줘요.
     if (!user) {
-      data = await getAPI(userId).catch((err) => {
+      try {
+        userInfo = await getAPI(userId);
+      } catch (err) {
         return res.status(404).json({
           status: 404,
           message: "존재하지 않는 아이디.",
         });
-      });
-      const contributions = calContributions(data);
-      userInfo = {
-        id: userId.toLowerCase(),
-        profile: data.user.avatarUrl,
-        bio: data.user.bio,
-        total: contributions.total,
-        today: contributions.today,
-        week: contributions.week,
-        weekAvg: contributions.weekAvg,
-        message: "처음 조회된 유저 정보.",
-      };
+      }
+      createNewData(userInfo);
     } else {
+      //userInfo에 db에 저장된 데이터를 담아요.
       userInfo = {
         id: user.user_id,
         profile: user.profile,
@@ -52,15 +46,13 @@ export default async (req: Request, res: Response) => {
       };
     }
 
-    findOrCreate(userInfo);
-
     res.status(200).json({
       status: 200,
       message: "조회 성공.",
       data: userInfo,
     });
   } catch (error) {
-    console.log("서버 오류", error.message);
+    console.log("서버 오류", error);
     return res.status(500).json({
       status: 500,
       message: "서버 오류.",

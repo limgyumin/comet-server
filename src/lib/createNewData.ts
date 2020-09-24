@@ -4,11 +4,7 @@ import UserInfoType from "../types/UserInfo";
 
 export default async (userInfo: UserInfoType) => {
   const userRepo = getRepository(User);
-
-  let user = await userRepo.findOne({ user_id: userInfo.id });
-  if (!user) {
-    user = new User();
-  }
+  const user = new User();
 
   user.user_id = userInfo.id;
   user.profile = userInfo.profile;

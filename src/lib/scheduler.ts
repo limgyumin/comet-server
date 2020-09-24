@@ -5,16 +5,17 @@ import * as schedule from "node-schedule";
 import UserDataType from "../types/UserData";
 import getAPI from "./githubAPI/getAPI";
 import calContributions from "./contributions/calContributions";
+import UserInfoType from "../types/UserInfo";
 
 //"0 0 10,12,14,16,18,20 * * *"
 export default () => {
   console.log("[Schedule] Run at a specific time");
-  schedule.scheduleJob("0 * * * * *", async () => {
+  schedule.scheduleJob("0 0 8,10,12,14,16,18,20 * * *", async () => {
     console.log("\n[Schedule] Start");
     try {
       const userRepo = getRepository(User);
       const rowCount: number = await userRepo.count();
-      let data: UserDataType;
+      let userInfo: UserInfoType;
 
       if (rowCount === 0) {
         console.log("[Typeorm] Empty DB Detected. Exit.");
@@ -23,32 +24,31 @@ export default () => {
         const userData = await userRepo.find();
         userData.map(async (user, index) => {
           try {
-            data = await getAPI(user.user_id);
-            const contributions = calContributions(data);
+            userInfo = await getAPI(user.user_id);
 
-            user.user_id = data.user.login.toLowerCase();
-            user.profile = data.user.avatarUrl;
-            user.bio = data.user.bio;
-            user.total_commit = contributions.total;
-            user.today_commit = contributions.today;
-            user.week_commit = contributions.week;
-            user.week_avg = contributions.weekAvg;
+            user.user_id = userInfo.id;
+            user.profile = userInfo.profile;
+            user.bio = userInfo.bio;
+            user.total_commit = userInfo.total;
+            user.today_commit = userInfo.today;
+            user.week_commit = userInfo.week;
+            user.week_avg = userInfo.weekAvg;
 
             await userRepo.save(user);
-            // console.log(
-            //   `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
-            // );
+            console.log(
+              `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
+            );
 
-            // if (contributions.today === 0) {
-            //   console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
-            // }
+            if (userInfo.today === 0) {
+              console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
+            }
           } catch (err) {
             console.log(err);
           }
         });
       }
     } catch (error) {
-      console.log("[GitHubAPI] ", error.message);
+      console.log(error.message);
     }
   });
 };
