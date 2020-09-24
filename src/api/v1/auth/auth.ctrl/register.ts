@@ -5,7 +5,7 @@ import UserInfoType from "../../../../types/UserInfo";
 import UserDataType from "../../../../types/UserData";
 
 import getAPI from "../../../../lib/githubAPI/getAPI";
-import findOrCreate from "../../../../lib/findOrCreate";
+import createNewData from "../../../../lib/createNewData";
 import calContributions from "../../../../lib/contributions/calContributions";
 
 interface BodyType {
@@ -45,6 +45,7 @@ export default async (req: Request, res: Response) => {
         weekAvg: contributions.weekAvg,
         message: "처음 조회된 유저 정보.",
       };
+      createNewData(userInfo);
     } else {
       //userInfo에 db에 저장된 데이터를 담아요.
       userInfo = {
@@ -58,8 +59,6 @@ export default async (req: Request, res: Response) => {
         message: "재 조회된 유저 정보.",
       };
     }
-
-    findOrCreate(userInfo);
 
     res.status(200).json({
       status: 200,
