@@ -1,19 +1,17 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
-import { User } from "../../../../entity/User";
-import UserInfoType from "../../../../types/UserInfo";
-import UserDataType from "../../../../types/UserData";
+import { User } from "../../../entity/User";
+import UserInfoType from "../../../types/UserInfo";
 
-import getAPI from "../../../../lib/githubAPI/getAPI";
-import createNewData from "../../../../lib/createNewData";
-import calContributions from "../../../../lib/contributions/calContributions";
-
-interface BodyType {
-  userId: string;
-}
+import getAPI from "../../../lib/githubAPI/getAPI";
+import createNewData from "../../../lib/createNewData";
 
 export default async (req: Request, res: Response) => {
-  const { userId }: BodyType = req.body;
+  type RequestBody = {
+    userId: string;
+  };
+
+  const { userId }: RequestBody = req.body;
 
   try {
     const userRepo = getRepository(User);
