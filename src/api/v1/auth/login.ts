@@ -40,10 +40,19 @@ export default async (req: Request, res: Response) => {
         Authorization: `token ${token}`,
       },
     });
+
+    const userInfo = {
+      userId: data.login,
+      name: data.name,
+      id: data.id,
+      profile: data.avatar_url,
+      bio: data.bio,
+    };
+
     res.status(200).json({
       status: 200,
       message: "유저 정보 조회 성공.",
-      data,
+      data: userInfo,
     });
   } catch (error) {
     console.log("서버 오류", error);
