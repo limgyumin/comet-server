@@ -2,9 +2,7 @@ import { getRepository } from "typeorm";
 import { User } from "../entity/User";
 import * as schedule from "node-schedule";
 
-import UserDataType from "../types/UserData";
 import getAPI from "./githubAPI/getAPI";
-import calContributions from "./contributions/calContributions";
 import UserInfoType from "../types/UserInfo";
 
 //"0 0 10,12,14,16,18,20 * * *"
