@@ -6,6 +6,7 @@ export default async (userInfo: UserInfoType) => {
   const userRepo = getRepository(User);
   const user = new User();
 
+  user.name = userInfo.name;
   user.user_id = userInfo.id;
   user.profile = userInfo.profile;
   user.bio = userInfo.bio;
