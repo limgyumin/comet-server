@@ -51,6 +51,7 @@ export default async (userId: string) => {
     today: contributions.today,
     week: contributions.week,
     weekAvg: contributions.weekAvg,
+    confirm: false,
     message: "처음 조회된 유저 정보.",
   };
 

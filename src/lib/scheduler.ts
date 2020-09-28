@@ -33,6 +33,7 @@ export default () => {
               userRepo.remove(user);
             }
 
+            //새로 갱신될 데이터들이에요.
             user.user_id = userInfo.id;
             user.bio = userInfo.bio;
             user.total_commit = userInfo.total;
