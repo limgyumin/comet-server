@@ -31,8 +31,12 @@ export default async (req: Request, res: Response) => {
         });
       }
 
-      if (username !== null) {
+      //유저 네임이 입력되었으면 userInfo에 name을 꼭 넣는다.
+      //userInfo의 name이 null이면 name에 id를 넣는다.
+      if (username !== "") {
         userInfo["name"] = username;
+      } else if (!userInfo["name"]) {
+        userInfo["name"] = userInfo["id"];
       }
 
       createNewData(userInfo);
@@ -47,6 +51,7 @@ export default async (req: Request, res: Response) => {
         today: user.today_commit,
         week: user.week_commit,
         weekAvg: user.week_avg,
+        confirm: user.confirm,
         message: "재 조회된 유저 정보.",
       };
     }

@@ -13,6 +13,7 @@ export default async (userInfo: UserInfoType) => {
   user.total_commit = userInfo.total;
   user.today_commit = userInfo.today;
   user.week_commit = userInfo.week;
+  user.confirm = userInfo.confirm;
   user.week_avg = userInfo.weekAvg;
 
   return userRepo.save(user);
