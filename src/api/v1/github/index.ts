@@ -1,8 +1,8 @@
 import { Router } from "express";
-import github from "./github";
+import user from "./user";
 
 const router = Router();
 
-router.post("/github", github);
+router.post("/user", user);
 
 export default router;

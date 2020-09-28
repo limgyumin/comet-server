@@ -17,6 +17,7 @@ export default async (userId: string) => {
   {
     user(login: "${userId}") {
       login
+      name
       avatarUrl
       bio
       contributionsCollection {
@@ -42,6 +43,7 @@ export default async (userId: string) => {
   //db에 저장을 해야하기 때문에
   //userInfo에 새로 얻은 데이터를 담아요.
   const userInfo: UserInfoType = {
+    name: data.user.name,
     id: userId.toLowerCase(),
     profile: data.user.avatarUrl,
     bio: data.user.bio,

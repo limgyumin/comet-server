@@ -8,10 +8,11 @@ import createNewData from "../../../lib/createNewData";
 
 export default async (req: Request, res: Response) => {
   type RequestBody = {
+    username: string;
     userId: string;
   };
 
-  const { userId }: RequestBody = req.body;
+  const { username, userId }: RequestBody = req.body;
 
   try {
     const userRepo = getRepository(User);
@@ -29,10 +30,16 @@ export default async (req: Request, res: Response) => {
           message: "존재하지 않는 아이디.",
         });
       }
+
+      if (username !== null) {
+        userInfo["name"] = username;
+      }
+
       createNewData(userInfo);
     } else {
       //userInfo에 db에 저장된 데이터를 담아요.
       userInfo = {
+        name: user.name,
         id: user.user_id,
         profile: user.profile,
         bio: user.bio,
@@ -44,6 +51,8 @@ export default async (req: Request, res: Response) => {
       };
     }
 
+    //response로 새로 조회면 새 정보를, 재 조회면 db의
+    //정보를 보여줘요.
     res.status(200).json({
       status: 200,
       message: "조회 성공.",

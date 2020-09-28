@@ -11,6 +11,17 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   idx: number;
 
+  @Column({
+    nullable: false,
+  })
+  confirm: boolean;
+
+  @Column({
+    nullable: true,
+    length: 255,
+  })
+  name: string;
+
   @PrimaryColumn({
     nullable: false,
     length: 255,

@@ -5,27 +5,35 @@ import * as schedule from "node-schedule";
 import getAPI from "./githubAPI/getAPI";
 import UserInfoType from "../types/UserInfo";
 
-//"0 0 10,12,14,16,18,20 * * *"
+//매일 8, 10, 12, 14, 16, 18, 20시에 갱신돼요.
 export default () => {
   console.log("[Schedule] Run at a specific time");
   schedule.scheduleJob("0 0 8,10,12,14,16,18,20 * * *", async () => {
     console.log("\n[Schedule] Start");
     try {
       const userRepo = getRepository(User);
+      //db Row의 수를 계산해요
       const rowCount: number = await userRepo.count();
       let userInfo: UserInfoType;
 
+      //Row의 수가 0이면 갱신을 하지 않아요.
       if (rowCount === 0) {
         console.log("[Typeorm] Empty DB Detected. Exit.");
         return;
       } else {
-        const userData = await userRepo.find();
+        //db에서 confirm Column이 true인 것들만 가져와요.
+        const userData = await userRepo.find({ confirm: true });
+        //가져온 row에 갱신된 데이터를 담아요.
         userData.map(async (user, index) => {
           try {
-            userInfo = await getAPI(user.user_id);
+            try {
+              userInfo = await getAPI(user.user_id);
+            } catch (error) {
+              console.log("[GitHubAPI] 머하는 놈이지..");
+              userRepo.remove(user);
+            }
 
             user.user_id = userInfo.id;
-            user.profile = userInfo.profile;
             user.bio = userInfo.bio;
             user.total_commit = userInfo.total;
             user.today_commit = userInfo.today;

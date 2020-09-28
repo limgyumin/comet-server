@@ -1,10 +1,10 @@
 import { Router } from "express";
 import auth from "./auth";
-import user from "./user";
+import github from "./github";
 
 const router = Router();
 
-router.use("/user", user);
+router.use("/github", github);
 router.use("/auth", auth);
 
 export default router;
