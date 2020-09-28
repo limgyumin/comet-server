@@ -7,5 +7,6 @@ export default interface UserInfoType {
   today: number;
   week: number;
   weekAvg: number;
+  confirm: boolean;
   message: string;
 }

@@ -7,8 +7,7 @@ export default async (req: Request, res: Response) => {
     code: string;
   };
 
-  const { code }: RequestBody = req.body;
-  console.log(code);
+  const { code }: RequestBody = req.body; 
 
   try {
     let response;
@@ -56,6 +55,8 @@ export default async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log("서버 오류", error);
+    console.log(code);
+
     return res.status(500).json({
       status: 500,
       message: "서버 오류.",
