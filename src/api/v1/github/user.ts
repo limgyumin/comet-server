@@ -52,7 +52,7 @@ export default async (req: Request, res: Response) => {
         week: user.week_commit,
         weekAvg: user.week_avg,
         confirm: user.confirm,
-        message: "재 조회된 유저 정보.",
+        message: "exist",
       };
     }
 

@@ -52,7 +52,7 @@ export default async (userId: string) => {
     week: contributions.week,
     weekAvg: contributions.weekAvg,
     confirm: false,
-    message: "처음 조회된 유저 정보.",
+    message: "new",
   };
 
   return userInfo;
