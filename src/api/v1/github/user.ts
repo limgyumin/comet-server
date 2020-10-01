@@ -49,6 +49,7 @@ export default async (req: Request, res: Response) => {
         bio: user.bio,
         total: user.total_commit,
         today: user.today_commit,
+        todayChange: user.today_change,
         week: user.week_commit,
         weekAvg: user.week_avg,
         confirm: user.confirm,

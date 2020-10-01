@@ -38,6 +38,7 @@ export default () => {
             user.bio = userInfo.bio;
             user.total_commit = userInfo.total;
             user.today_commit = userInfo.today;
+            user.today_change = userInfo.today - user.today_commit;
             user.week_commit = userInfo.week;
             user.week_avg = userInfo.weekAvg;
 
