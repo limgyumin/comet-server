@@ -5,6 +5,7 @@ export default interface UserInfoType {
   bio: string;
   total: number;
   today: number;
+  todayChange: number;
   week: number;
   weekAvg: number;
   confirm: boolean;
