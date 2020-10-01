@@ -53,6 +53,11 @@ export class User extends BaseEntity {
   @Column({
     nullable: false,
   })
+  today_change: number;
+
+  @Column({
+    nullable: false,
+  })
   week_commit: number;
 
   @Column({

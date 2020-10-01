@@ -49,6 +49,7 @@ export default async (userId: string) => {
     bio: data.user.bio,
     total: contributions.total,
     today: contributions.today,
+    todayChange: 0,
     week: contributions.week,
     weekAvg: contributions.weekAvg,
     confirm: false,

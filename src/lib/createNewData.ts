@@ -12,6 +12,7 @@ export default async (userInfo: UserInfoType) => {
   user.bio = userInfo.bio;
   user.total_commit = userInfo.total;
   user.today_commit = userInfo.today;
+  user.today_change = userInfo.todayChange;
   user.week_commit = userInfo.week;
   user.confirm = userInfo.confirm;
   user.week_avg = userInfo.weekAvg;
