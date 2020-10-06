@@ -4,12 +4,12 @@ import * as schedule from "node-schedule";
 
 import getAPI from "./githubAPI/getAPI";
 import UserInfoType from "../types/UserInfo";
+import logger from "./logger";
 
 //매일 8, 10, 12, 14, 16, 18, 20시에 갱신돼요.
 export default () => {
-  console.log("[Schedule] Run at a specific time");
-  schedule.scheduleJob("0 0 8,10,12,14,16,18,20 * * *", async () => {
-    console.log("\n[Schedule] Start");
+  schedule.scheduleJob("0 0 8,10,12,14,16,18,20,22 * * *", async () => {
+    logger.gray("GitHub 정보 갱신 시작.");
     try {
       const userRepo = getRepository(User);
       //db Row의 수를 계산해요
@@ -17,46 +17,33 @@ export default () => {
       let userInfo: UserInfoType;
 
       //Row의 수가 0이면 갱신을 하지 않아요.
-      if (rowCount === 0) {
-        console.log("[Typeorm] Empty DB Detected. Exit.");
-        return;
-      } else {
+      if (rowCount) {
         //db에서 confirm Column이 true인 것들만 가져와요.
-        const userData = await userRepo.find({ confirm: true });
+        const users: User[] = await userRepo.find({ confirm: true });
         //가져온 row에 갱신된 데이터를 담아요.
-        userData.map(async (user, index) => {
+        users.map(async (user, index) => {
           try {
-            try {
-              userInfo = await getAPI(user.user_id);
-            } catch (error) {
-              console.log("[GitHubAPI] 머하는 놈이지..");
-              userRepo.remove(user);
-            }
-
-            //새로 갱신될 데이터들이에요.
-            user.user_id = userInfo.id;
-            user.bio = userInfo.bio;
-            user.total_commit = userInfo.total;
-            user.today_commit = userInfo.today;
-            user.today_change = userInfo.today - user.today_commit;
-            user.week_commit = userInfo.week;
-            user.week_avg = userInfo.weekAvg;
-
-            await userRepo.save(user);
-            console.log(
-              `[Typeorm] Successfully updated [${user.user_id}]: ${user.today_commit}`
-            );
-
-            if (userInfo.today === 0) {
-              console.log(`[GitHubAPI] 0 Contribution: [${user.user_id}]`);
-            }
-          } catch (err) {
-            console.log(err);
+            userInfo = await getAPI(user.user_id);
+          } catch (error) {
+            logger.red(`갱신 실패. [${user.user_id}]`);
+            userRepo.remove(user);
+            return error;
           }
+
+          //새로 갱신될 데이터들이에요.
+          user.bio = userInfo.bio;
+          user.total_commit = userInfo.total;
+          user.today_change = userInfo.today - user.today_commit;
+          user.today_commit = userInfo.today;
+          user.week_commit = userInfo.week;
+          user.week_avg = userInfo.weekAvg;
+
+          await userRepo.save(user);
+          logger.green(`갱신 성공. [${user.user_id}]: ${user.today_commit}`);
         });
       }
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      logger.red("갱신 오류.", err.message);
     }
   });
 };
